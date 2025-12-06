@@ -12,45 +12,70 @@
 <body>
     <div id="plotly-graph"></div>
     <script>
+        // --- DATOS ---
+        // Los datos se han reestructurado ligeramente para Plotly.js para incluir las celdas Entidad x Sexo
+        
         var data = [
+            // Traza 0: Medias por Entidad Federativa (Marginales)
             {
                 x: ["Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Coahuila", "Colima", "Chiapas", "Chihuahua", "Ciudad de México", "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"],
                 y: [60.612278, 56.639301, 62.648933, 58.267727, 60.609001, 61.810463, 58.576077, 54.445137, 59.76762, 64.071907, 57.620647, 60.171589, 65.560165, 58.124298, 58.639942, 60.160568, 58.368225, 57.188675, 61.284981, 59.771526, 62.369919, 64.175453, 62.76123, 60.400585, 55.665188, 59.632973, 60.520378, 57.425404, 63.224617, 60.905773, 59.88813, 59.222832],
-                name: 'Media por Entidad',
+                name: 'Total Entidad',
                 type: 'bar',
                 marker: { color: '#1f77b4' },
                 visible: true
             },
+            // Traza 1: Medias Nacionales por Sexo
             {
                 x: ["Mujeres", "Hombres", "TOTAL SEXO"],
                 y: [61.096561, 57.953423, 59.63578],
-                name: 'Media Nacional por Sexo',
+                name: 'Nacional por Sexo',
                 type: 'bar',
-                marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] }, /* Colores ajustados para diferenciar */
+                marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] },
+                visible: false
+            },
+            // Traza 2 (NUEVA): Comparación Sexo por Entidad (Celdas desagregadas)
+            // Se agrupan Hombres y Mujeres en todos los estados. Plotly los apila/agrupa automáticamente.
+            {
+                x: ["Aguascalientes", "Aguascalientes", "Baja California", "Baja California", "Baja California Sur", "Baja California Sur", "Campeche", "Campeche", "Coahuila", "Coahuila", "Colima", "Colima", "Chiapas", "Chiapas", "Chihuahua", "Chihuahua", "Ciudad de México", "Ciudad de México", "Durango", "Durango", "Guanajuato", "Guanajuato", "Guerrero", "Guerrero", "Hidalgo", "Hidalgo", "Jalisco", "Jalisco", "México", "México", "Michoacán", "Michoacán", "Morelos", "Morelos", "Nayarit", "Nayarit", "Nuevo León", "Nuevo León", "Oaxaca", "Oaxaca", "Puebla", "Puebla", "Querétaro", "Querétaro", "Quintana Roo", "Quintana Roo", "San Luis Potosí", "San Luis Potosí", "Sinaloa", "Sinaloa", "Sonora", "Sonora", "Tabasco", "Tabasco", "Tamaulipas", "Tamaulipas", "Tlaxcala", "Tlaxcala", "Veracruz", "Veracruz", "Yucatán", "Yucatán", "Zacatecas", "Zacatecas"],
+                y: [58.646446, 62.388214, 56.308151, 56.939297, 60.598232, 64.527916, 56.883587, 59.519478, 58.764233, 62.364307, 59.703575, 63.776394, 56.458565, 60.307858, 53.187004, 55.644093, 59.622387, 59.890213, 60.284916, 67.187553, 55.743652, 59.325527, 56.243843, 63.385593, 64.189293, 66.612022, 56.037392, 60.080231, 58.111305, 59.09721, 56.727734, 63.047134, 57.340054, 59.248878, 53.419842, 60.562645, 60.466278, 62.010601, 55.123337, 63.481098, 61.298454, 63.284061, 61.461536, 66.620789, 62.960716, 62.564732, 57.801552, 62.604576, 51.998241, 58.65733, 57.268551, 61.857254, 60.482002, 60.552914, 55.52512, 59.054958, 60.292324, 65.803665, 58.274921, 63.039871, 60.012993, 59.77224, 58.574898, 59.798546],
+                name: 'Sexo por Entidad',
+                type: 'bar',
+                marker: { color: '#8c564b' },
                 visible: false
             }
         ];
 
+        // --- LAYOUT Y CONTROLES ---
         var layout = {
             title: 'Media Ponderada de Horas de Trabajo (ENUT)',
             xaxis: { title: 'Grupo de Análisis' },
             yaxis: { title: 'Media de Horas de Trabajo', range: [50, 70] },
+            barmode: 'group', // Muestra las barras lado a lado cuando hay varios datos para el mismo X (Entidad)
             updatemenus: [
                 {
                     buttons: [
                         {
-                            label: 'Media por Entidad Federativa',
+                            label: 'Total por Entidad (Marginales)',
                             method: 'update',
                             args: [
-                                { 'visible': [true, false] }, // Mostrar Traza 0 (Entidad), Ocultar Traza 1 (Sexo)
-                                { 'title': 'Media Ponderada por Entidad Federativa' }
+                                { 'visible': [true, false, false] }, // Traza 0
+                                { 'title': 'Media Ponderada Total por Entidad Federativa' }
                             ]
                         },
                         {
-                            label: 'Media Nacional por Sexo',
+                            label: 'Comparación Sexo por Entidad (Celdas)',
                             method: 'update',
                             args: [
-                                { 'visible': [false, true] }, // Ocultar Traza 0 (Entidad), Mostrar Traza 1 (Sexo)
+                                { 'visible': [false, false, true] }, // Traza 2
+                                { 'title': 'Comparación de Medias Hombres vs. Mujeres por Entidad' }
+                            ]
+                        },
+                        {
+                            label: 'Total Nacional por Sexo',
+                            method: 'update',
+                            args: [
+                                { 'visible': [false, true, false] }, // Traza 1
                                 { 'title': 'Media Ponderada Nacional por Sexo' }
                             ]
                         }
