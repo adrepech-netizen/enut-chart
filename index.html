@@ -21,9 +21,6 @@
         // Etiquetas: Entidad Federativa (Repetida para Hombres y Mujeres)
         const entidades = ["Aguascalientes", "Aguascalientes", "Baja California", "Baja California", "Baja California Sur", "Baja California Sur", "Campeche", "Campeche", "Coahuila", "Coahuila", "Colima", "Colima", "Chiapas", "Chiapas", "Chihuahua", "Chihuahua", "Ciudad de México", "Ciudad de México", "Durango", "Durango", "Guanajuato", "Guanajuato", "Guerrero", "Guerrero", "Hidalgo", "Hidalgo", "Jalisco", "Jalisco", "México", "México", "Michoacán", "Michoacán", "Morelos", "Morelos", "Nayarit", "Nayarit", "Nuevo León", "Nuevo León", "Oaxaca", "Oaxaca", "Puebla", "Puebla", "Querétaro", "Querétaro", "Quintana Roo", "Quintana Roo", "San Luis Potosí", "San Luis Potosí", "Sinaloa", "Sinaloa", "Sonora", "Sonora", "Tabasco", "Tabasco", "Tamaulipas", "Tamaulipas", "Tlaxcala", "Tlaxcala", "Veracruz", "Veracruz", "Yucatán", "Yucatán", "Zacatecas", "Zacatecas"];
         
-        // Etiquetas: Sexo
-        const sexos = ["Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres"];
-
         // Lista única de entidades para el menú de selección
         const entidadesUnicas = [...new Set(entidades)].sort();
 
@@ -38,6 +35,8 @@
             let mediaHombres = 0;
             let mediaMujeres = 0;
             let mediaTotal = totalesEntidad[entidad] || 0; 
+
+            const sexos = ["Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres"];
 
             for (let i = 0; i < entidades.length; i++) {
                 if (entidades[i] === entidad) {
@@ -93,7 +92,7 @@
 
         // TRAZA C_Hombres (Índice 2): Se usará para el filtrado por entidad.
         var traceC_Hombres = {
-            x: ['Hombres'],
+            x: ['Hombres'], // Importante que sea un array de una posición
             y: [filtrarPorEntidad(entidadesUnicas[0]).mediaHombres],
             name: 'Hombres',
             type: 'bar',
@@ -107,7 +106,7 @@
 
         // TRAZA C_Mujeres (Índice 3): Se usará para el filtrado por entidad.
         var traceC_Mujeres = {
-            x: ['Mujeres'],
+            x: ['Mujeres'], // Importante que sea un array de una posición
             y: [filtrarPorEntidad(entidadesUnicas[0]).mediaMujeres],
             name: 'Mujeres',
             type: 'bar',
@@ -121,7 +120,7 @@
         
         // TRAZA C_Total (Índice 4): Se usará para el Total de la entidad seleccionada.
         var traceC_Total = {
-            x: ['Total Entidad'],
+            x: ['Total Entidad'], // Importante que sea un array de una posición
             y: [filtrarPorEntidad(entidadesUnicas[0]).mediaTotal],
             name: 'Total Entidad',
             type: 'bar',
@@ -133,11 +132,10 @@
             hovertemplate: hoverFormat 
         };
 
-        // El array de datos debe incluir las 5 trazas
         var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres, traceC_Total]; 
 
         // ----------------------------------------------------------------------------------
-        // --- CONSTRUCCIÓN DEL MENÚ (Ajuste de visibilidad y data para todas las opciones) ---
+        // --- CONSTRUCCIÓN DEL MENÚ (Ajuste de la actualización X para centrar la etiqueta) ---
         // ----------------------------------------------------------------------------------
 
         // 1. Botón para la Opción 1: Total por Entidad (Traza A, Índice 0)
@@ -175,18 +173,19 @@
                     {
                         'visible': [false, false, true, true, true], // Hombres, Mujeres y Total Entidad visibles
 
-                        // **CORRECCIÓN CLAVE:** Se actualizan las propiedades Y, X y Text para los índices 2, 3 y 4.
+                        // Actualiza Y y Text
                         'y[2]': [[datosFiltrados.mediaHombres]],
                         'y[3]': [[datosFiltrados.mediaMujeres]],
-                        'y[4]': [[datosFiltrados.mediaTotal]], // <-- Total de la Entidad
-
-                        'x[2]': [['Hombres']],
-                        'x[3]': [['Mujeres']],
-                        'x[4]': [['Total Entidad']], // <-- Etiqueta X para el Total
+                        'y[4]': [[datosFiltrados.mediaTotal]], 
 
                         'text[2]': [[textHombres]],
                         'text[3]': [[textMujeres]],
-                        'text[4]': [[textTotal]] // <-- Etiqueta de texto para el Total
+                        'text[4]': [[textTotal]], 
+                        
+                        // **CORRECCIÓN CLAVE:** Asegurar que la etiqueta X se actualice correctamente como un array de un solo elemento para cada traza.
+                        'x[2]': [['Hombres']], 
+                        'x[3]': [['Mujeres']], 
+                        'x[4]': [['Total Entidad']] 
                     },
                     // args[1]: Layout
                     {
