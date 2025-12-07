@@ -73,8 +73,8 @@
 
         // TRAZA B (Índice 1): Medias Nacionales por Sexo 
         var traceB = {
-            // **CORRECCIÓN CLAVE AQUÍ:** Cambiamos "TOTAL SEXO" a "Total Entidad"
-            x: ["Mujeres", "Hombres", "Total Entidad"], 
+            // Se usa "TOTAL SEXO" aquí para evitar conflictos con la Traza C.
+            x: ["Mujeres", "Hombres", "TOTAL SEXO"], 
             y: y_traceB, 
             name: 'Nacional por Sexo',
             type: 'bar',
@@ -93,7 +93,8 @@
             x: ['Mujeres', 'Hombres', 'Total Entidad'],
             // Orden Y y Text en base al orden X
             y: [primerEntidad.mediaMujeres, primerEntidad.mediaHombres, primerEntidad.mediaTotal],
-            name: 'Comparación Sexo/Total',
+            // **Nombre de la traza C.** Es crucial que aquí NO se use "Total Sexo".
+            name: 'Comparación Entidad', 
             type: 'bar',
             // Colores: Mujeres(#2ca02c), Hombres(#ff7f0e), Total Entidad(#d62728)
             marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] }, 
@@ -146,12 +147,10 @@
                     // args[0]: Data 
                     {
                         'visible': [false, false, true], 
-
                         'y[2]': [y_data], 
                         'text[2]': [text_data],
-                        // Reafirmamos las etiquetas X para la Opción 3.
+                        // **CORRECCIÓN CLAVE:** Forzamos la definición de las TRES etiquetas X y los colores de las barras.
                         'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']],
-                        // Reafirmamos los colores de las barras
                         'marker.color[2]': [['#2ca02c', '#ff7f0e', '#d62728']]
                     },
                     // args[1]: Layout
