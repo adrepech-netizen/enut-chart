@@ -17,8 +17,7 @@
         // ----------------------------------------------------------------------------------
         const medias = [58.646446, 62.388214, 56.308151, 56.939297, 60.598232, 64.527916, 56.883587, 59.519478, 58.764233, 62.364307, 59.703575, 63.776394, 56.458565, 60.307858, 53.187004, 55.644093, 59.622387, 59.890213, 60.284916, 67.187553, 55.743652, 59.325527, 56.243843, 63.385593, 64.189293, 66.612022, 56.037392, 60.080231, 58.111305, 59.09721, 56.727734, 63.047134, 57.340054, 59.248878, 53.419842, 60.562645, 60.466278, 62.010601, 55.123337, 63.481098, 61.298454, 63.284061, 61.461536, 66.620789, 62.960716, 62.564732, 57.801552, 62.604576, 51.998241, 58.65733, 57.268551, 61.857254, 60.482002, 60.552914, 55.52512, 59.054958, 60.292324, 65.803665, 58.274921, 63.039871, 60.012993, 59.77224, 58.574898, 59.798546];
         const entidades = ["Aguascalientes", "Aguascalientes", "Baja California", "Baja California", "Baja California Sur", "Baja California Sur", "Campeche", "Campeche", "Coahuila", "Coahuila", "Colima", "Colima", "Chiapas", "Chiapas", "Chihuahua", "Chihuahua", "Ciudad de México", "Ciudad de México", "Durango", "Durango", "Guanajuato", "Guanajuato", "Guerrero", "Guerrero", "Hidalgo", "Hidalgo", "Jalisco", "Jalisco", "México", "México", "Michoacán", "Michoacán", "Morelos", "Morelos", "Nayarit", "Nayarit", "Nuevo León", "Nuevo León", "Oaxaca", "Oaxaca", "Puebla", "Puebla", "Querétaro", "Querétaro", "Quintana Roo", "Quintana Roo", "San Luis Potosí", "San Luis Potosí", "Sinaloa", "Sinaloa", "Sonora", "Sonora", "Tabasco", "Tabasco", "Tamaulipas", "Tamaulipas", "Tlaxcala", "Tlaxcala", "Veracruz", "Veracruz", "Yucatán", "Yucatán", "Zacatecas", "Zacatecas"];
-        const sexos = ["Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres"];
-
+        
         const entidadesUnicas = [...new Set(entidades)].sort();
 
         // VALORES MARGINALES (TOTAL) DE LAS ENTIDADES 
@@ -31,6 +30,8 @@
             let mediaHombres = 0;
             let mediaMujeres = 0;
             let mediaTotal = totalesEntidad[entidad] || 0; 
+
+            const sexos = ["Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres"];
 
             for (let i = 0; i < entidades.length; i++) {
                 if (entidades[i] === entidad) {
@@ -52,7 +53,7 @@
         const text_traceB = y_traceB.map(y => y.toFixed(1));
 
         // ----------------------------------------------------------------------------------
-        // --- TRAZAS BASE (Ahora solo 3 trazas: A, B, y C unificada) ---
+        // --- TRAZAS BASE (3 trazas: A, B, y C unificada) ---
         // ----------------------------------------------------------------------------------
         const hoverFormat = '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>';
 
@@ -84,16 +85,16 @@
             hovertemplate: hoverFormat 
         };
         
-        // **TRAZA C UNIFICADA (Índice 2): Comparación por Entidad (Hombres, Mujeres, Total Entidad)**
+        // TRAZA C UNIFICADA (Índice 2): Comparación por Entidad (Hombres, Mujeres, Total Entidad)
         const primerEntidad = filtrarPorEntidad(entidadesUnicas[0]);
         var traceC_Comparacion = {
-            // Inicialmente cargamos los 3 valores de la primera entidad
+            // Se define el orden X: Mujeres, Hombres, Total Entidad
             x: ['Mujeres', 'Hombres', 'Total Entidad'],
+            // Se define el orden Y y Text en base al orden X
             y: [primerEntidad.mediaMujeres, primerEntidad.mediaHombres, primerEntidad.mediaTotal],
             name: 'Comparación Sexo/Total',
             type: 'bar',
-            // Colores correspondientes a Mujeres, Hombres y Total
-            marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] },
+            marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] }, // Colores correspondientes
             visible: false, 
             text: [primerEntidad.mediaMujeres.toFixed(1), primerEntidad.mediaHombres.toFixed(1), primerEntidad.mediaTotal.toFixed(1)],
             textposition: 'inside',
@@ -102,7 +103,7 @@
         };
 
 
-        var data = [traceA, traceB, traceC_Comparacion]; // ¡Ahora solo 3 trazas!
+        var data = [traceA, traceB, traceC_Comparacion]; 
 
         // ----------------------------------------------------------------------------------
         // --- CONSTRUCCIÓN DEL MENÚ (Ajuste para usar la Traza C unificada) ---
@@ -113,7 +114,7 @@
             label: '1. Total por Entidad (Marginal)',
             method: 'update',
             args: [
-                { 'visible': [true, false, false] }, // Traza A visible
+                { 'visible': [true, false, false] }, 
                 { 'title': 'Media Ponderada Total por Entidad Federativa', 'xaxis.title': 'Entidad Federativa', 'barmode': 'group' }
             ]
         };
@@ -123,7 +124,7 @@
             label: '2. Total Nacional por Sexo',
             method: 'update',
             args: [
-                { 'visible': [false, true, false] }, // Traza B visible
+                { 'visible': [false, true, false] }, 
                 { 'title': 'Media Ponderada Nacional por Sexo', 'xaxis.title': 'Sexo', 'barmode': 'group' }
             ]
         };
@@ -131,6 +132,8 @@
         // 3. Botones de Filtrado Dinámico (Traza C_Comparacion, Índice 2)
         const botonesComparacion = entidadesUnicas.map(entidad => {
             const datosFiltrados = filtrarPorEntidad(entidad);
+            
+            // Se mantiene el orden Mujeres, Hombres, Total Entidad
             const y_data = [datosFiltrados.mediaMujeres, datosFiltrados.mediaHombres, datosFiltrados.mediaTotal];
             const text_data = y_data.map(y => y.toFixed(1));
             
@@ -138,14 +141,16 @@
                 label: `3. Sexo en: ${entidad}`,
                 method: 'update',
                 args: [
-                    // args[0]: Data (Solo actualizamos la traza C_Comparacion, índice 2)
+                    // args[0]: Data 
                     {
-                        'visible': [false, false, true], // Traza C_Comparacion visible
+                        'visible': [false, false, true], 
 
-                        // Actualizamos Y, Text y X para la ÚNICA traza C.
+                        // Actualizamos Y, Text y X para la ÚNICA traza C (índice 2).
+                        // Se actualizan los datos, pero el ORDEN de las etiquetas X debe ser el mismo que en Y/Text.
                         'y[2]': [y_data], 
                         'text[2]': [text_data],
-                        'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']] // Esto garantiza el orden y centrado.
+                        // **Esta línea garantiza la alineación**
+                        'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']] 
                     },
                     // args[1]: Layout
                     {
