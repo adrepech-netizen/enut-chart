@@ -88,13 +88,14 @@
         // TRAZA C UNIFICADA (Índice 2): Comparación por Entidad (Hombres, Mujeres, Total Entidad)
         const primerEntidad = filtrarPorEntidad(entidadesUnicas[0]);
         var traceC_Comparacion = {
-            // Se define el orden X inicial: Mujeres, Hombres, Total Entidad
+            // Orden X inicial: Mujeres, Hombres, Total Entidad
             x: ['Mujeres', 'Hombres', 'Total Entidad'],
-            // Se define el orden Y y Text en base al orden X
+            // Orden Y y Text en base al orden X
             y: [primerEntidad.mediaMujeres, primerEntidad.mediaHombres, primerEntidad.mediaTotal],
             name: 'Comparación Sexo/Total',
             type: 'bar',
-            marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] }, // Colores correspondientes
+            // Colores: Mujeres(#2ca02c), Hombres(#ff7f0e), Total Entidad(#d62728)
+            marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] }, 
             visible: false, 
             text: [primerEntidad.mediaMujeres.toFixed(1), primerEntidad.mediaHombres.toFixed(1), primerEntidad.mediaTotal.toFixed(1)],
             textposition: 'inside',
@@ -147,8 +148,10 @@
 
                         'y[2]': [y_data], 
                         'text[2]': [text_data],
-                        // **CORRECCIÓN CLAVE:** La etiqueta X se define como: Mujeres, Hombres, Total Entidad (como se solicitó).
-                        'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']] 
+                        // **CORRECCIÓN CLAVE:** Reafirmar las etiquetas X para la Opción 3.
+                        'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']],
+                        // **CORRECCIÓN ADICIONAL:** Reafirmar los colores de las barras para que aparezcan las 3.
+                        'marker.color[2]': [['#2ca02c', '#ff7f0e', '#d62728']]
                     },
                     // args[1]: Layout
                     {
