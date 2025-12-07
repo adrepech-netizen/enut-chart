@@ -60,7 +60,7 @@
             type: 'bar',
             marker: { color: '#1f77b4' },
             visible: true,
-            hovertemplate: hoverFormat // Aplica formato a 1 decimal
+            hovertemplate: hoverFormat 
         };
 
         // TRAZA B: Medias Nacionales por Sexo (CORREGIDO: Datos y categorías explícitas)
@@ -72,7 +72,7 @@
             type: 'bar',
             marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] },
             visible: false,
-            hovertemplate: hoverFormat // Aplica formato a 1 decimal
+            hovertemplate: hoverFormat 
         };
 
         // TRAZA C (Hombres): Se usará para el filtrado por entidad.
@@ -83,7 +83,7 @@
             type: 'bar',
             marker: { color: '#ff7f0e' },
             visible: false,
-            hovertemplate: hoverFormat // Aplica formato a 1 decimal
+            hovertemplate: hoverFormat 
         };
 
         // TRAZA C (Mujeres): Se usará para el filtrado por entidad.
@@ -94,13 +94,13 @@
             type: 'bar',
             marker: { color: '#2ca02c' },
             visible: false,
-            hovertemplate: hoverFormat // Aplica formato a 1 decimal
+            hovertemplate: hoverFormat 
         };
 
         var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres];
 
         // ----------------------------------------------------------------------------------
-        // --- CONSTRUCCIÓN DEL MENÚ (Lógica idéntica al código anterior) ---
+        // --- CONSTRUCCIÓN DEL MENÚ (Combina opciones de vista y opciones de filtrado) ---
         // ----------------------------------------------------------------------------------
 
         // 1. Botón para la Opción 1: Total por Entidad (Traza A)
@@ -118,7 +118,8 @@
             label: '2. Total Nacional por Sexo',
             method: 'update',
             args: [
-                { 'visible': [false, true, false, false] }, // Solo Traza B visible
+                // CORRECCIÓN CLAVE: Asegura que solo la Traza B esté visible
+                { 'visible': [false, true, false, false] }, 
                 { 'title': 'Media Ponderada Nacional por Sexo', 'xaxis.title': 'Sexo', 'barmode': 'group' }
             ]
         };
