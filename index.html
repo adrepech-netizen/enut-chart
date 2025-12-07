@@ -27,10 +27,17 @@
         // Lista única de entidades para el menú de selección
         const entidadesUnicas = [...new Set(entidades)].sort();
 
-        // Función que filtra los datos para una entidad dada (necesaria para la opción 3)
+        // VALORES MARGINALES (TOTAL) DE LAS ENTIDADES (Usados en la Traza A y Traza C_Total)
+        const totalesEntidad = {
+            "Aguascalientes": 60.612278, "Baja California": 56.639301, "Baja California Sur": 62.648933, "Campeche": 58.267727, "Coahuila": 60.609001, "Colima": 61.810463, "Chiapas": 58.576077, "Chihuahua": 54.445137, "Ciudad de México": 59.76762, "Durango": 64.071907, "Guanajuato": 57.620647, "Guerrero": 60.171589, "Hidalgo": 65.560165, "Jalisco": 58.124298, "México": 58.639942, "Michoacán": 60.160568, "Morelos": 58.368225, "Nayarit": 57.188675, "Nuevo León": 61.284981, "Oaxaca": 59.771526, "Puebla": 62.369919, "Querétaro": 64.175453, "Quintana Roo": 62.76123, "San Luis Potosí": 60.400585, "Sinaloa": 55.665188, "Sonora": 59.632973, "Tabasco": 60.520378, "Tamaulipas": 57.425404, "Tlaxcala": 63.224617, "Veracruz": 60.905773, "Yucatán": 59.88813, "Zacatecas": 59.222832
+        };
+
+
+        // Función que filtra los datos para una entidad dada (Actualizada para incluir el total)
         function filtrarPorEntidad(entidad) {
             let mediaHombres = 0;
             let mediaMujeres = 0;
+            let mediaTotal = totalesEntidad[entidad] || 0; // Obtiene el total de la entidad
 
             for (let i = 0; i < entidades.length; i++) {
                 if (entidades[i] === entidad) {
@@ -41,11 +48,11 @@
                     }
                 }
             }
-            return { mediaHombres: mediaHombres, mediaMujeres: mediaMujeres };
+            return { mediaHombres: mediaHombres, mediaMujeres: mediaMujeres, mediaTotal: mediaTotal };
         }
 
-        // VALORES REDONDEADOS a 1 decimal para las Traza A y B (para usarlos como data labels)
-        const y_traceA = [60.612278, 56.639301, 62.648933, 58.267727, 60.609001, 61.810463, 58.576077, 54.445137, 59.76762, 64.071907, 57.620647, 60.171589, 65.560165, 58.124298, 58.639942, 60.160568, 58.368225, 57.188675, 61.284981, 59.771526, 62.369919, 64.175453, 62.76123, 60.400585, 55.665188, 59.632973, 60.520378, 57.425404, 63.224617, 60.905773, 59.88813, 59.222832];
+        // --- VALORES TEXTO REDONDEADOS a 1 decimal para las Traza A y B (data labels) ---
+        const y_traceA = Object.values(totalesEntidad);
         const text_traceA = y_traceA.map(y => y.toFixed(1));
 
         const y_traceB = [61.096561, 57.953423, 59.63578];
@@ -57,13 +64,12 @@
 
         // TRAZA A: Medias por Entidad Federativa (Marginales)
         var traceA = {
-            x: ["Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Coahuila", "Colima", "Chiapas", "Chihuahua", "Ciudad de México", "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"],
+            x: Object.keys(totalesEntidad),
             y: y_traceA,
             name: 'Total Entidad',
             type: 'bar',
             marker: { color: '#1f77b4' },
             visible: true,
-            // Etiquetas permanentes
             text: text_traceA,
             textposition: 'inside',
             textfont: { color: 'white' },
@@ -78,14 +84,13 @@
             type: 'bar',
             marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] },
             visible: false,
-            // Etiquetas permanentes
             text: text_traceB,
             textposition: 'inside',
             textfont: { color: 'white' },
             hovertemplate: '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>' 
         };
 
-        // TRAZA C (Hombres): Comparación por Entidad
+        // TRAZA C (Hombres): Se usará para el filtrado por entidad.
         var traceC_Hombres = {
             x: ['Hombres'],
             y: [filtrarPorEntidad(entidadesUnicas[0]).mediaHombres],
@@ -93,14 +98,13 @@
             type: 'bar',
             marker: { color: '#ff7f0e' },
             visible: false,
-            // Etiquetas permanentes (se actualizarán en el menú)
             text: [filtrarPorEntidad(entidadesUnicas[0]).mediaHombres.toFixed(1)],
             textposition: 'inside',
             textfont: { color: 'white' },
             hovertemplate: '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>' 
         };
 
-        // TRAZA C (Mujeres): Comparación por Entidad
+        // TRAZA C (Mujeres): Se usará para el filtrado por entidad.
         var traceC_Mujeres = {
             x: ['Mujeres'],
             y: [filtrarPorEntidad(entidadesUnicas[0]).mediaMujeres],
@@ -108,17 +112,33 @@
             type: 'bar',
             marker: { color: '#2ca02c' },
             visible: false,
-            // Etiquetas permanentes (se actualizarán en el menú)
             text: [filtrarPorEntidad(entidadesUnicas[0]).mediaMujeres.toFixed(1)],
             textposition: 'inside',
             textfont: { color: 'white' },
             hovertemplate: '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>' 
         };
+        
+        // **********************************************
+        // NUEVA TRAZA D (Total Entidad): Mismo color que la traza nacional total
+        // **********************************************
+        var traceC_Total = {
+            x: ['Total Entidad'],
+            y: [filtrarPorEntidad(entidadesUnicas[0]).mediaTotal],
+            name: 'Total Entidad',
+            type: 'bar',
+            marker: { color: '#d62728' },
+            visible: false, // Inicialmente oculta
+            text: [filtrarPorEntidad(entidadesUnicas[0]).mediaTotal.toFixed(1)],
+            textposition: 'inside',
+            textfont: { color: 'white' },
+            hovertemplate: '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>' 
+        };
 
-        var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres];
+
+        var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres, traceC_Total]; // 5 TRAZAS AHORA
 
         // ----------------------------------------------------------------------------------
-        // --- CONSTRUCCIÓN DEL MENÚ (Ajuste para actualizar las etiquetas) ---
+        // --- CONSTRUCCIÓN DEL MENÚ (Ajuste para incluir la Traza C_Total) ---
         // ----------------------------------------------------------------------------------
 
         // 1. Botón para la Opción 1: Total por Entidad (Traza A)
@@ -126,7 +146,7 @@
             label: '1. Total por Entidad (Marginal)',
             method: 'update',
             args: [
-                { 'visible': [true, false, false, false] },
+                { 'visible': [true, false, false, false, false] }, // Solo Traza A visible
                 { 'title': 'Media Ponderada Total por Entidad Federativa', 'xaxis.title': 'Entidad Federativa', 'barmode': 'group' }
             ]
         };
@@ -136,7 +156,7 @@
             label: '2. Total Nacional por Sexo',
             method: 'update',
             args: [
-                { 'visible': [false, true, false, false] },
+                { 'visible': [false, true, false, false, false] }, // Solo Traza B visible
                 { 'title': 'Media Ponderada Nacional por Sexo', 'xaxis.title': 'Sexo', 'barmode': 'group' }
             ]
         };
@@ -146,23 +166,25 @@
             const datosFiltrados = filtrarPorEntidad(entidad);
             const textHombres = datosFiltrados.mediaHombres.toFixed(1);
             const textMujeres = datosFiltrados.mediaMujeres.toFixed(1);
+            const textTotal = datosFiltrados.mediaTotal.toFixed(1);
             
             return {
                 label: `3. Sexo en: ${entidad}`,
                 method: 'update',
                 args: [
                     // args[0]: Data (Visibilidad, Valores Y y TEXTO de etiquetas)
+                    // VISIBILIDAD: [A, B, C_Hombres, C_Mujeres, C_Total] -> [false, false, true, true, true]
                     {
-                        'visible': [false, false, true, true], 
-                        'y': [[datosFiltrados.mediaHombres], [datosFiltrados.mediaMujeres]],
-                        'x': [['Hombres'], ['Mujeres']],
-                        // **ACTUALIZACIÓN DE ETIQUETAS A 1 DECIMAL**
-                        'text': [[textHombres], [textMujeres]] 
+                        'visible': [false, false, true, true, true], 
+                        'y': [[datosFiltrados.mediaHombres], [datosFiltrados.mediaMujeres], [datosFiltrados.mediaTotal]],
+                        'x': [['Hombres'], ['Mujeres'], ['Total Entidad']],
+                        // **ACTUALIZACIÓN DE ETIQUETAS** (Hombres en traceC_Hombres, Mujeres en traceC_Mujeres, Total en traceC_Total)
+                        'text': [[textHombres], [textMujeres], [textTotal]] 
                     },
                     // args[1]: Layout (Título y Eje X)
                     {
-                        'title': `Comparación de Medias Hombres vs. Mujeres en ${entidad}`,
-                        'xaxis.title': 'Sexo',
+                        'title': `Comparación de Medias por Sexo y Total en ${entidad}`,
+                        'xaxis.title': 'Sexo / Total Entidad',
                         'barmode': 'group'
                     }
                 ]
@@ -186,7 +208,7 @@
             yaxis: { 
                 title: 'Media de Horas de Trabajo', 
                 range: [50, 70],
-                tickformat: '.1f' // Formato del eje Y a 1 decimal
+                tickformat: '.1f' 
             },
             barmode: 'group',
             updatemenus: [{
