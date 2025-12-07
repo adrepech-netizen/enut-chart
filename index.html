@@ -2,11 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Medias ENUT: Total, Nacional por Sexo y Comparación por Entidad</title>
     <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
     <style>
-        body { font-family: 'Open Sans', sans-serif; margin: 20px; }
-        .plotly-graph-div { margin: auto; max-width: 90%; }
+        body { font-family: 'Open Sans', sans-serif; margin: 0; padding: 0; }
+        /* Ajustar el div contenedor para que ocupe todo el ancho disponible */
+        .plotly-graph-div { margin: auto; width: 100%; max-width: 100%; height: 500px; } 
     </style>
 </head>
 <body>
@@ -141,13 +143,11 @@
             return {
                 label: `3. Sexo en: ${entidad}`,
                 method: 'update',
-                // El primer elemento de 'args[0]' debe ser el array completo de trazas, no solo el valor.
-                // Plotly necesita saber qué trazas (y en qué índice) están siendo actualizadas.
                 args: [
                     // args[0]: Data (Actualización de Y, Text, X, y Color de la Traza C [índice 2])
                     {
                         'visible': [false, false, true], 
-                        'y': [traceA.y, traceB.y, y_data], // Se actualizan los datos Y de las TRES trazas
+                        'y': [traceA.y, traceB.y, y_data], 
                         'text': [traceA.text, traceB.text, text_data],
                         'x': [traceA.x, traceB.x, ['Mujeres', 'Hombres', 'Total Entidad']],
                         'marker.color': [traceA.marker.color, traceB.marker.color, ['#2ca02c', '#ff7f0e', '#d62728']]
@@ -169,32 +169,46 @@
         ];
         
         // ----------------------------------------------------------------------------------
-        // --- LAYOUT FINAL ---
+        // --- LAYOUT FINAL (Ajuste de Margen y Posición del Menú para Móviles) ---
         // ----------------------------------------------------------------------------------
 
         var layout = {
             title: 'Media Ponderada Total por Entidad Federativa',
-            xaxis: { title: 'Entidad Federativa' },
+            xaxis: { 
+                title: 'Entidad Federativa',
+                // Asegurar que el texto del eje no se corte en móviles
+                automargin: true 
+            },
             yaxis: { 
                 title: 'Media de Horas de Trabajo', 
                 range: [50, 70],
-                tickformat: '.1f' 
+                tickformat: '.1f',
+                automargin: true 
+            },
+            margin: {
+                l: 50, // Menos margen izquierdo
+                r: 10,  // Menos margen derecho
+                t: 100, // Menos margen superior (para dejar espacio al menú)
+                b: 80   // Margen inferior para títulos de eje
             },
             barmode: 'group',
             updatemenus: [{
                 buttons: todosLosBotones,
                 direction: 'down',
                 showactive: true,
-                x: 0.1,
+                x: 0, // Posición X ajustada a la izquierda (0)
                 xanchor: 'left',
-                y: 1.1,
+                y: 1.15, // Posición Y ligeramente más alta
                 yanchor: 'top',
-                active: 0 // Inicia en la Opción 1: Total por Entidad
+                active: 0 
             }]
         };
 
-        // --- CREAR GRÁFICO ---
-        Plotly.newPlot('plotly-graph', data, layout);
+        // --- CREAR GRÁFICO (Añadir configuración de responsividad) ---
+        Plotly.newPlot('plotly-graph', data, layout, {
+            // **ADICIÓN CLAVE 2: Hacer el gráfico sensible al tamaño del contenedor**
+            responsive: true 
+        });
     </script>
 </body>
 </html>
