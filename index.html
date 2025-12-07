@@ -118,16 +118,14 @@
             hovertemplate: '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>' 
         };
         
-        // **********************************************
-        // NUEVA TRAZA D (Total Entidad): Mismo color que la traza nacional total
-        // **********************************************
+        // TRAZA C (Total Entidad): Se usará para el filtrado por entidad.
         var traceC_Total = {
             x: ['Total Entidad'],
             y: [filtrarPorEntidad(entidadesUnicas[0]).mediaTotal],
             name: 'Total Entidad',
             type: 'bar',
             marker: { color: '#d62728' },
-            visible: false, // Inicialmente oculta
+            visible: false, 
             text: [filtrarPorEntidad(entidadesUnicas[0]).mediaTotal.toFixed(1)],
             textposition: 'inside',
             textfont: { color: 'white' },
@@ -135,53 +133,64 @@
         };
 
 
-        var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres, traceC_Total]; // 5 TRAZAS AHORA
+        var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres, traceC_Total]; // ¡5 TRAZAS!
 
         // ----------------------------------------------------------------------------------
-        // --- CONSTRUCCIÓN DEL MENÚ (Ajuste para incluir la Traza C_Total) ---
+        // --- CONSTRUCCIÓN DEL MENÚ (Ajuste de visibilidad y data para todas las opciones) ---
         // ----------------------------------------------------------------------------------
 
         // 1. Botón para la Opción 1: Total por Entidad (Traza A)
+        // Visibilidad: [A, B, C_Hombres, C_Mujeres, C_Total] -> [true, false, false, false, false]
         const botonTotalEntidad = {
             label: '1. Total por Entidad (Marginal)',
             method: 'update',
             args: [
-                { 'visible': [true, false, false, false, false] }, // Solo Traza A visible
+                { 'visible': [true, false, false, false, false] }, 
                 { 'title': 'Media Ponderada Total por Entidad Federativa', 'xaxis.title': 'Entidad Federativa', 'barmode': 'group' }
             ]
         };
 
         // 2. Botón para la Opción 2: Total Nacional por Sexo (Traza B)
+        // Visibilidad: [A, B, C_Hombres, C_Mujeres, C_Total] -> [false, true, false, false, false]
         const botonTotalNacional = {
             label: '2. Total Nacional por Sexo',
             method: 'update',
             args: [
-                { 'visible': [false, true, false, false, false] }, // Solo Traza B visible
+                { 'visible': [false, true, false, false, false] }, 
                 { 'title': 'Media Ponderada Nacional por Sexo', 'xaxis.title': 'Sexo', 'barmode': 'group' }
             ]
         };
 
         // 3. Botones de Filtrado Dinámico (Opción 3: Comparación Sexo por Entidad)
+        // Visibilidad: [A, B, C_Hombres, C_Mujeres, C_Total] -> [false, false, true, true, true]
         const botonesComparacion = entidadesUnicas.map(entidad => {
             const datosFiltrados = filtrarPorEntidad(entidad);
-            const textHombres = datosFiltrados.mediaHombres.toFixed(1);
-            const textMujeres = datosFiltrados.mediaMujeres.toFixed(1);
-            const textTotal = datosFiltrados.mediaTotal.toFixed(1);
+            const y_data = [datosFiltrados.mediaHombres, datosFiltrados.mediaMujeres, datosFiltrados.mediaTotal];
+            const text_data = y_data.map(y => y.toFixed(1));
+            const x_labels = ['Hombres', 'Mujeres', 'Total Entidad'];
             
+            // Los datos se asignan a las trazas C_Hombres, C_Mujeres y C_Total (índices 2, 3, 4)
             return {
                 label: `3. Sexo en: ${entidad}`,
                 method: 'update',
                 args: [
-                    // args[0]: Data (Visibilidad, Valores Y y TEXTO de etiquetas)
-                    // VISIBILIDAD: [A, B, C_Hombres, C_Mujeres, C_Total] -> [false, false, true, true, true]
                     {
-                        'visible': [false, false, true, true, true], 
-                        'y': [[datosFiltrados.mediaHombres], [datosFiltrados.mediaMujeres], [datosFiltrados.mediaTotal]],
-                        'x': [['Hombres'], ['Mujeres'], ['Total Entidad']],
-                        // **ACTUALIZACIÓN DE ETIQUETAS** (Hombres en traceC_Hombres, Mujeres en traceC_Mujeres, Total en traceC_Total)
-                        'text': [[textHombres], [textMujeres], [textTotal]] 
+                        'visible': [false, false, true, true, true], // Hombres, Mujeres y Total Entidad visibles
+                        
+                        // Actualiza los valores Y, X y Text de las trazas C_Hombres, C_Mujeres, C_Total
+                        // Se actualizan los índices 2, 3 y 4 respectivamente.
+                        'y[2]': [[datosFiltrados.mediaHombres]],
+                        'y[3]': [[datosFiltrados.mediaMujeres]],
+                        'y[4]': [[datosFiltrados.mediaTotal]],
+
+                        'x[2]': [['Hombres']],
+                        'x[3]': [['Mujeres']],
+                        'x[4]': [['Total Entidad']],
+
+                        'text[2]': [[text_data[0]]],
+                        'text[3]': [[text_data[1]]],
+                        'text[4]': [[text_data[2]]]
                     },
-                    // args[1]: Layout (Título y Eje X)
                     {
                         'title': `Comparación de Medias por Sexo y Total en ${entidad}`,
                         'xaxis.title': 'Sexo / Total Entidad',
