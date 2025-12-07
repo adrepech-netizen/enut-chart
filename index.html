@@ -88,7 +88,7 @@
         // TRAZA C UNIFICADA (Índice 2): Comparación por Entidad (Hombres, Mujeres, Total Entidad)
         const primerEntidad = filtrarPorEntidad(entidadesUnicas[0]);
         var traceC_Comparacion = {
-            // Se define el orden X: Mujeres, Hombres, Total Entidad
+            // Se define el orden X inicial: Mujeres, Hombres, Total Entidad
             x: ['Mujeres', 'Hombres', 'Total Entidad'],
             // Se define el orden Y y Text en base al orden X
             y: [primerEntidad.mediaMujeres, primerEntidad.mediaHombres, primerEntidad.mediaTotal],
@@ -145,11 +145,9 @@
                     {
                         'visible': [false, false, true], 
 
-                        // Actualizamos Y, Text y X para la ÚNICA traza C (índice 2).
-                        // Se actualizan los datos, pero el ORDEN de las etiquetas X debe ser el mismo que en Y/Text.
                         'y[2]': [y_data], 
                         'text[2]': [text_data],
-                        // **Esta línea garantiza la alineación**
+                        // **CORRECCIÓN CLAVE:** La etiqueta X se define como: Mujeres, Hombres, Total Entidad (como se solicitó).
                         'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']] 
                     },
                     // args[1]: Layout
