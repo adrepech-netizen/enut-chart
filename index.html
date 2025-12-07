@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Comparación de Medias por Sexo y Entidad</title>
+    <title>Medias ENUT: Total, Nacional por Sexo y Comparación por Entidad</title>
     <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
     <style>
         body { font-family: 'Open Sans', sans-serif; margin: 20px; }
@@ -12,23 +12,22 @@
 <body>
     <div id="plotly-graph"></div>
     <script>
-        // --- DATOS GLOBALES (Incluyen solo Hombres y Mujeres por Entidad) ---
-        // Estos datos se usarán para el filtrado dinámico.
-
+        // ----------------------------------------------------------------------------------
+        // --- DATOS GLOBALES (Celdas Entidad x Sexo) para filtrado dinámico ---
+        // ----------------------------------------------------------------------------------
         // Datos: Media de Horas de Trabajo (activ_prod_sin_cp)
         const medias = [58.646446, 62.388214, 56.308151, 56.939297, 60.598232, 64.527916, 56.883587, 59.519478, 58.764233, 62.364307, 59.703575, 63.776394, 56.458565, 60.307858, 53.187004, 55.644093, 59.622387, 59.890213, 60.284916, 67.187553, 55.743652, 59.325527, 56.243843, 63.385593, 64.189293, 66.612022, 56.037392, 60.080231, 58.111305, 59.09721, 56.727734, 63.047134, 57.340054, 59.248878, 53.419842, 60.562645, 60.466278, 62.010601, 55.123337, 63.481098, 61.298454, 63.284061, 61.461536, 66.620789, 62.960716, 62.564732, 57.801552, 62.604576, 51.998241, 58.65733, 57.268551, 61.857254, 60.482002, 60.552914, 55.52512, 59.054958, 60.292324, 65.803665, 58.274921, 63.039871, 60.012993, 59.77224, 58.574898, 59.798546];
 
         // Etiquetas: Entidad Federativa (Repetida para Hombres y Mujeres)
         const entidades = ["Aguascalientes", "Aguascalientes", "Baja California", "Baja California", "Baja California Sur", "Baja California Sur", "Campeche", "Campeche", "Coahuila", "Coahuila", "Colima", "Colima", "Chiapas", "Chiapas", "Chihuahua", "Chihuahua", "Ciudad de México", "Ciudad de México", "Durango", "Durango", "Guanajuato", "Guanajuato", "Guerrero", "Guerrero", "Hidalgo", "Hidalgo", "Jalisco", "Jalisco", "México", "México", "Michoacán", "Michoacán", "Morelos", "Morelos", "Nayarit", "Nayarit", "Nuevo León", "Nuevo León", "Oaxaca", "Oaxaca", "Puebla", "Puebla", "Querétaro", "Querétaro", "Quintana Roo", "Quintana Roo", "San Luis Potosí", "San Luis Potosí", "Sinaloa", "Sinaloa", "Sonora", "Sonora", "Tabasco", "Tabasco", "Tamaulipas", "Tamaulipas", "Tlaxcala", "Tlaxcala", "Veracruz", "Veracruz", "Yucatán", "Yucatán", "Zacatecas", "Zacatecas"];
-
-        // Etiquetas: Sexo (Alternando Hombres/Mujeres)
+        
+        // Etiquetas: Sexo
         const sexos = ["Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres"];
 
-        // --- FUNCIONES DE FILTRADO ---
-        // 1. Obtiene una lista única y ordenada de entidades.
+        // Lista única de entidades para el menú de selección
         const entidadesUnicas = [...new Set(entidades)].sort();
 
-        // 2. Función que filtra los datos para una entidad dada
+        // Función que filtra los datos para una entidad dada (necesaria para la opción 3)
         function filtrarPorEntidad(entidad) {
             let mediaHombres = 0;
             let mediaMujeres = 0;
@@ -48,55 +47,125 @@
             };
         }
 
-        // --- TRAZAS INICIALES (Muestra Aguascalientes por defecto) ---
-        const datosIniciales = filtrarPorEntidad(entidadesUnicas[0]);
 
-        var data = [
-            {
-                x: ["Hombres", "Mujeres"],
-                y: [datosIniciales.mediaHombres, datosIniciales.mediaMujeres],
-                name: entidadesUnicas[0],
-                type: 'bar',
-                marker: { color: ['#ff7f0e', '#2ca02c'] },
-            }
-        ];
+        // ----------------------------------------------------------------------------------
+        // --- TRAZAS BASE (Todas ocultas excepto la primera) ---
+        // ----------------------------------------------------------------------------------
 
-        // --- LAYOUT Y CONTROLES ---
-        
-        // 1. Construir los botones para el menú desplegable (un botón por estado)
-        const dropdownButtons = entidadesUnicas.map(entidad => {
+        // TRAZA A: Medias por Entidad Federativa (Marginales)
+        var traceA = {
+            x: ["Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Coahuila", "Colima", "Chiapas", "Chihuahua", "Ciudad de México", "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"],
+            y: [60.612278, 56.639301, 62.648933, 58.267727, 60.609001, 61.810463, 58.576077, 54.445137, 59.76762, 64.071907, 57.620647, 60.171589, 65.560165, 58.124298, 58.639942, 60.160568, 58.368225, 57.188675, 61.284981, 59.771526, 62.369919, 64.175453, 62.76123, 60.400585, 55.665188, 59.632973, 60.520378, 57.425404, 63.224617, 60.905773, 59.88813, 59.222832],
+            name: 'Total Entidad',
+            type: 'bar',
+            marker: { color: '#1f77b4' },
+            visible: true
+        };
+
+        // TRAZA B: Medias Nacionales por Sexo
+        var traceB = {
+            x: ["Mujeres", "Hombres", "TOTAL SEXO"],
+            y: [61.096561, 57.953423, 59.63578],
+            name: 'Nacional por Sexo',
+            type: 'bar',
+            marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] },
+            visible: false
+        };
+
+        // TRAZA C (Hombres): Se usará para el filtrado por entidad.
+        var traceC_Hombres = {
+            x: ['Hombres'],
+            y: [filtrarPorEntidad(entidadesUnicas[0]).mediaHombres],
+            name: 'Hombres',
+            type: 'bar',
+            marker: { color: '#ff7f0e' },
+            visible: false
+        };
+
+        // TRAZA C (Mujeres): Se usará para el filtrado por entidad.
+        var traceC_Mujeres = {
+            x: ['Mujeres'],
+            y: [filtrarPorEntidad(entidadesUnicas[0]).mediaMujeres],
+            name: 'Mujeres',
+            type: 'bar',
+            marker: { color: '#2ca02c' },
+            visible: false
+        };
+
+        var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres];
+
+        // ----------------------------------------------------------------------------------
+        // --- CONSTRUCCIÓN DEL MENÚ (Combina opciones de vista y opciones de filtrado) ---
+        // ----------------------------------------------------------------------------------
+
+        // 1. Botón para la Opción 1: Total por Entidad (Traza A)
+        const botonTotalEntidad = {
+            label: '1. Total por Entidad (Marginal)',
+            method: 'update',
+            args: [
+                { 'visible': [true, false, false, false] }, // Solo Traza A visible
+                { 'title': 'Media Ponderada Total por Entidad Federativa', 'xaxis.title': 'Entidad Federativa', 'barmode': 'group' }
+            ]
+        };
+
+        // 2. Botón para la Opción 2: Total Nacional por Sexo (Traza B)
+        const botonTotalNacional = {
+            label: '2. Total Nacional por Sexo',
+            method: 'update',
+            args: [
+                { 'visible': [false, true, false, false] }, // Solo Traza B visible
+                { 'title': 'Media Ponderada Nacional por Sexo', 'xaxis.title': 'Sexo', 'barmode': 'group' }
+            ]
+        };
+
+        // 3. Botones de Filtrado Dinámico (Opción 3: Comparación Sexo por Entidad)
+        const botonesComparacion = entidadesUnicas.map(entidad => {
+            const datosFiltrados = filtrarPorEntidad(entidad);
             return {
-                label: entidad,
+                label: `3. Sexo en: ${entidad}`,
                 method: 'update',
                 args: [
-                    // args[0]: Data (Valores Y)
+                    // args[0]: Data (Visibilidad y Nuevos Valores Y)
                     {
-                        'y': [[filtrarPorEntidad(entidad).mediaHombres, filtrarPorEntidad(entidad).mediaMujeres]],
-                        'x': [['Hombres', 'Mujeres']]
+                        'visible': [false, false, true, true], // Traza C (Hombres y Mujeres) visible
+                        'y': [[datosFiltrados.mediaHombres], [datosFiltrados.mediaMujeres]],
+                        'x': [['Hombres'], ['Mujeres']]
                     },
-                    // args[1]: Layout (Título y Nombre de la Traza)
+                    // args[1]: Layout (Título y Eje X)
                     {
-                        'title': `Comparación de Medias por Sexo: ${entidad}`,
-                        'name': [entidad]
+                        'title': `Comparación de Medias Hombres vs. Mujeres en ${entidad}`,
+                        'xaxis.title': 'Sexo',
+                        'barmode': 'group'
                     }
                 ]
             };
         });
 
+        // Combinar todos los botones de las tres opciones en un solo array
+        const todosLosBotones = [
+            botonTotalEntidad,
+            botonTotalNacional,
+            ...botonesComparacion // Se despliegan todos los botones de filtrado después de los totales
+        ];
+        
+        // ----------------------------------------------------------------------------------
+        // --- LAYOUT FINAL ---
+        // ----------------------------------------------------------------------------------
+
         var layout = {
-            title: `Comparación de Medias por Sexo: ${entidadesUnicas[0]}`, // Título inicial
-            xaxis: { title: 'Sexo' },
+            title: 'Media Ponderada Total por Entidad Federativa', // Título inicial
+            xaxis: { title: 'Entidad Federativa' },
             yaxis: { title: 'Media de Horas de Trabajo', range: [50, 70] },
             barmode: 'group',
             updatemenus: [{
-                buttons: dropdownButtons,
+                buttons: todosLosBotones,
                 direction: 'down',
                 showactive: true,
                 x: 0.1,
                 xanchor: 'left',
                 y: 1.1,
                 yanchor: 'top',
-                active: 0 // Estado activo por defecto (Aguascalientes)
+                active: 0 // Iniciar con la vista Total por Entidad
             }]
         };
 
