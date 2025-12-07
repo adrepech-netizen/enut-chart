@@ -73,7 +73,8 @@
 
         // TRAZA B (Índice 1): Medias Nacionales por Sexo 
         var traceB = {
-            x: ["Mujeres", "Hombres", "TOTAL SEXO"], 
+            // **CORRECCIÓN CLAVE AQUÍ:** Cambiamos "TOTAL SEXO" a "Total Entidad"
+            x: ["Mujeres", "Hombres", "Total Entidad"], 
             y: y_traceB, 
             name: 'Nacional por Sexo',
             type: 'bar',
@@ -148,9 +149,9 @@
 
                         'y[2]': [y_data], 
                         'text[2]': [text_data],
-                        // **CORRECCIÓN CLAVE:** Reafirmar las etiquetas X para la Opción 3.
+                        // Reafirmamos las etiquetas X para la Opción 3.
                         'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']],
-                        // **CORRECCIÓN ADICIONAL:** Reafirmar los colores de las barras para que aparezcan las 3.
+                        // Reafirmamos los colores de las barras
                         'marker.color[2]': [['#2ca02c', '#ff7f0e', '#d62728']]
                     },
                     // args[1]: Layout
