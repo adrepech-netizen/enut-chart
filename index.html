@@ -73,7 +73,6 @@
 
         // TRAZA B (Índice 1): Medias Nacionales por Sexo 
         var traceB = {
-            // Se usa "TOTAL SEXO" aquí para evitar conflictos con la Traza C.
             x: ["Mujeres", "Hombres", "TOTAL SEXO"], 
             y: y_traceB, 
             name: 'Nacional por Sexo',
@@ -93,7 +92,6 @@
             x: ['Mujeres', 'Hombres', 'Total Entidad'],
             // Orden Y y Text en base al orden X
             y: [primerEntidad.mediaMujeres, primerEntidad.mediaHombres, primerEntidad.mediaTotal],
-            // **Nombre de la traza C.** Es crucial que aquí NO se use "Total Sexo".
             name: 'Comparación Entidad', 
             type: 'bar',
             // Colores: Mujeres(#2ca02c), Hombres(#ff7f0e), Total Entidad(#d62728)
@@ -133,7 +131,7 @@
         };
 
         // 3. Botones de Filtrado Dinámico (Traza C_Comparacion, Índice 2)
-        const botonesComparacion = entidadesUnicas.map(entidad => {
+        const botonesComparacion = entidadesUnicas.map((entidad, index) => {
             const datosFiltrados = filtrarPorEntidad(entidad);
             
             // Se mantiene el orden Mujeres, Hombres, Total Entidad
@@ -143,15 +141,16 @@
             return {
                 label: `3. Sexo en: ${entidad}`,
                 method: 'update',
+                // El primer elemento de 'args[0]' debe ser el array completo de trazas, no solo el valor.
+                // Plotly necesita saber qué trazas (y en qué índice) están siendo actualizadas.
                 args: [
-                    // args[0]: Data 
+                    // args[0]: Data (Actualización de Y, Text, X, y Color de la Traza C [índice 2])
                     {
                         'visible': [false, false, true], 
-                        'y[2]': [y_data], 
-                        'text[2]': [text_data],
-                        // **CORRECCIÓN CLAVE:** Forzamos la definición de las TRES etiquetas X y los colores de las barras.
-                        'x[2]': [['Mujeres', 'Hombres', 'Total Entidad']],
-                        'marker.color[2]': [['#2ca02c', '#ff7f0e', '#d62728']]
+                        'y': [traceA.y, traceB.y, y_data], // Se actualizan los datos Y de las TRES trazas
+                        'text': [traceA.text, traceB.text, text_data],
+                        'x': [traceA.x, traceB.x, ['Mujeres', 'Hombres', 'Total Entidad']],
+                        'marker.color': [traceA.marker.color, traceB.marker.color, ['#2ca02c', '#ff7f0e', '#d62728']]
                     },
                     // args[1]: Layout
                     {
@@ -190,7 +189,7 @@
                 xanchor: 'left',
                 y: 1.1,
                 yanchor: 'top',
-                active: 0
+                active: 0 // Inicia en la Opción 1: Total por Entidad
             }]
         };
 
