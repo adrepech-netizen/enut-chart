@@ -15,15 +15,19 @@
         // ----------------------------------------------------------------------------------
         // --- DATOS GLOBALES (Celdas Entidad x Sexo) para filtrado dinámico ---
         // ----------------------------------------------------------------------------------
-        // Media de Horas de Trabajo (activ_prod_sin_cp)
+        // Datos: Media de Horas de Trabajo (activ_prod_sin_cp)
         const medias = [58.646446, 62.388214, 56.308151, 56.939297, 60.598232, 64.527916, 56.883587, 59.519478, 58.764233, 62.364307, 59.703575, 63.776394, 56.458565, 60.307858, 53.187004, 55.644093, 59.622387, 59.890213, 60.284916, 67.187553, 55.743652, 59.325527, 56.243843, 63.385593, 64.189293, 66.612022, 56.037392, 60.080231, 58.111305, 59.09721, 56.727734, 63.047134, 57.340054, 59.248878, 53.419842, 60.562645, 60.466278, 62.010601, 55.123337, 63.481098, 61.298454, 63.284061, 61.461536, 66.620789, 62.960716, 62.564732, 57.801552, 62.604576, 51.998241, 58.65733, 57.268551, 61.857254, 60.482002, 60.552914, 55.52512, 59.054958, 60.292324, 65.803665, 58.274921, 63.039871, 60.012993, 59.77224, 58.574898, 59.798546];
 
+        // Etiquetas: Entidad Federativa (Repetida para Hombres y Mujeres)
         const entidades = ["Aguascalientes", "Aguascalientes", "Baja California", "Baja California", "Baja California Sur", "Baja California Sur", "Campeche", "Campeche", "Coahuila", "Coahuila", "Colima", "Colima", "Chiapas", "Chiapas", "Chihuahua", "Chihuahua", "Ciudad de México", "Ciudad de México", "Durango", "Durango", "Guanajuato", "Guanajuato", "Guerrero", "Guerrero", "Hidalgo", "Hidalgo", "Jalisco", "Jalisco", "México", "México", "Michoacán", "Michoacán", "Morelos", "Morelos", "Nayarit", "Nayarit", "Nuevo León", "Nuevo León", "Oaxaca", "Oaxaca", "Puebla", "Puebla", "Querétaro", "Querétaro", "Quintana Roo", "Quintana Roo", "San Luis Potosí", "San Luis Potosí", "Sinaloa", "Sinaloa", "Sonora", "Sonora", "Tabasco", "Tabasco", "Tamaulipas", "Tamaulipas", "Tlaxcala", "Tlaxcala", "Veracruz", "Veracruz", "Yucatán", "Yucatán", "Zacatecas", "Zacatecas"];
         
+        // Etiquetas: Sexo
         const sexos = ["Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres", "Hombres", "Mujeres"];
 
+        // Lista única de entidades para el menú de selección
         const entidadesUnicas = [...new Set(entidades)].sort();
 
+        // Función que filtra los datos para una entidad dada (necesaria para la opción 3)
         function filtrarPorEntidad(entidad) {
             let mediaHombres = 0;
             let mediaMujeres = 0;
@@ -40,13 +44,13 @@
             return { mediaHombres: mediaHombres, mediaMujeres: mediaMujeres };
         }
 
+        // FORMATO: Plantilla de sobrevuelo para redondear a 1 decimal
+        const hoverFormat = '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>';
+
 
         // ----------------------------------------------------------------------------------
         // --- TRAZAS BASE (Ajuste de datos y formato) ---
         // ----------------------------------------------------------------------------------
-
-        // FORMATO: Plantilla de sobrevuelo para redondear a 1 decimal
-        const hoverFormat = '<b>%{x}</b><br>Media: %{y:.1f} horas<extra></extra>';
 
         // TRAZA A: Medias por Entidad Federativa (Marginales)
         var traceA = {
@@ -56,18 +60,18 @@
             type: 'bar',
             marker: { color: '#1f77b4' },
             visible: true,
-            hovertemplate: hoverFormat
+            hovertemplate: hoverFormat // Aplica formato a 1 decimal
         };
 
-        // TRAZA B: Medias Nacionales por Sexo (CORREGIDO: Datos completos para 3 categorías)
+        // TRAZA B: Medias Nacionales por Sexo (CORREGIDO: Datos y categorías explícitas)
         var traceB = {
-            x: ["Mujeres", "Hombres", "TOTAL SEXO"],
-            y: [61.096561, 57.953423, 59.63578],
+            x: ["Mujeres", "Hombres", "TOTAL SEXO"], // Categorías en el orden deseado
+            y: [61.096561, 57.953423, 59.63578], // Datos correspondientes a X
             name: 'Nacional por Sexo',
             type: 'bar',
             marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] },
             visible: false,
-            hovertemplate: hoverFormat
+            hovertemplate: hoverFormat // Aplica formato a 1 decimal
         };
 
         // TRAZA C (Hombres): Se usará para el filtrado por entidad.
@@ -78,7 +82,7 @@
             type: 'bar',
             marker: { color: '#ff7f0e' },
             visible: false,
-            hovertemplate: hoverFormat
+            hovertemplate: hoverFormat // Aplica formato a 1 decimal
         };
 
         // TRAZA C (Mujeres): Se usará para el filtrado por entidad.
@@ -89,7 +93,7 @@
             type: 'bar',
             marker: { color: '#2ca02c' },
             visible: false,
-            hovertemplate: hoverFormat
+            hovertemplate: hoverFormat // Aplica formato a 1 decimal
         };
 
         var data = [traceA, traceB, traceC_Hombres, traceC_Mujeres];
@@ -103,7 +107,7 @@
             label: '1. Total por Entidad (Marginal)',
             method: 'update',
             args: [
-                { 'visible': [true, false, false, false] },
+                { 'visible': [true, false, false, false] }, // Solo Traza A visible
                 { 'title': 'Media Ponderada Total por Entidad Federativa', 'xaxis.title': 'Entidad Federativa', 'barmode': 'group' }
             ]
         };
@@ -113,7 +117,7 @@
             label: '2. Total Nacional por Sexo',
             method: 'update',
             args: [
-                { 'visible': [false, true, false, false] },
+                { 'visible': [false, true, false, false] }, // Solo Traza B visible
                 { 'title': 'Media Ponderada Nacional por Sexo', 'xaxis.title': 'Sexo', 'barmode': 'group' }
             ]
         };
@@ -125,11 +129,13 @@
                 label: `3. Sexo en: ${entidad}`,
                 method: 'update',
                 args: [
+                    // args[0]: Data (Visibilidad y Nuevos Valores Y)
                     {
-                        'visible': [false, false, true, true],
+                        'visible': [false, false, true, true], // Traza C (Hombres y Mujeres) visible
                         'y': [[datosFiltrados.mediaHombres], [datosFiltrados.mediaMujeres]],
                         'x': [['Hombres'], ['Mujeres']]
                     },
+                    // args[1]: Layout (Título y Eje X)
                     {
                         'title': `Comparación de Medias Hombres vs. Mujeres en ${entidad}`,
                         'xaxis.title': 'Sexo',
@@ -139,10 +145,11 @@
             };
         });
 
+        // Combinar todos los botones de las tres opciones en un solo array
         const todosLosBotones = [
             botonTotalEntidad,
             botonTotalNacional,
-            ...botonesComparacion
+            ...botonesComparacion // Se despliegan todos los botones de filtrado después de los totales
         ];
         
         // ----------------------------------------------------------------------------------
@@ -150,9 +157,13 @@
         // ----------------------------------------------------------------------------------
 
         var layout = {
-            title: 'Media Ponderada Total por Entidad Federativa',
+            title: 'Media Ponderada Total por Entidad Federativa', // Título inicial
             xaxis: { title: 'Entidad Federativa' },
-            yaxis: { title: 'Media de Horas de Trabajo', range: [50, 70], tickformat: '.1f' }, // Ajuste de formato para el eje Y
+            yaxis: { 
+                title: 'Media de Horas de Trabajo', 
+                range: [50, 70],
+                tickformat: '.1f' // Formato del eje Y a 1 decimal
+            },
             barmode: 'group',
             updatemenus: [{
                 buttons: todosLosBotones,
@@ -162,7 +173,7 @@
                 xanchor: 'left',
                 y: 1.1,
                 yanchor: 'top',
-                active: 0
+                active: 0 // Iniciar con la vista Total por Entidad
             }]
         };
 
