@@ -6,8 +6,8 @@
     <title>Medias ENUT: Total, Nacional por Sexo y Comparación por Entidad</title>
     <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
     <style>
+        /* Ajuste de estilos para incrustación y responsividad */
         body { font-family: 'Open Sans', sans-serif; margin: 0; padding: 0; }
-        /* Ajustar el div contenedor para que ocupe todo el ancho disponible */
         .plotly-graph-div { margin: auto; width: 100%; max-width: 100%; height: 500px; } 
     </style>
 </head>
@@ -15,7 +15,7 @@
     <div id="plotly-graph"></div>
     <script>
         // ----------------------------------------------------------------------------------
-        // --- DATOS GLOBALES (Celdas Entidad x Sexo) para filtrado dinámico ---
+        // --- DATOS GLOBALES ---
         // ----------------------------------------------------------------------------------
         const medias = [58.646446, 62.388214, 56.308151, 56.939297, 60.598232, 64.527916, 56.883587, 59.519478, 58.764233, 62.364307, 59.703575, 63.776394, 56.458565, 60.307858, 53.187004, 55.644093, 59.622387, 59.890213, 60.284916, 67.187553, 55.743652, 59.325527, 56.243843, 63.385593, 64.189293, 66.612022, 56.037392, 60.080231, 58.111305, 59.09721, 56.727734, 63.047134, 57.340054, 59.248878, 53.419842, 60.562645, 60.466278, 62.010601, 55.123337, 63.481098, 61.298454, 63.284061, 61.461536, 66.620789, 62.960716, 62.564732, 57.801552, 62.604576, 51.998241, 58.65733, 57.268551, 61.857254, 60.482002, 60.552914, 55.52512, 59.054958, 60.292324, 65.803665, 58.274921, 63.039871, 60.012993, 59.77224, 58.574898, 59.798546];
         const entidades = ["Aguascalientes", "Aguascalientes", "Baja California", "Baja California", "Baja California Sur", "Baja California Sur", "Campeche", "Campeche", "Coahuila", "Coahuila", "Colima", "Colima", "Chiapas", "Chiapas", "Chihuahua", "Chihuahua", "Ciudad de México", "Ciudad de México", "Durango", "Durango", "Guanajuato", "Guanajuato", "Guerrero", "Guerrero", "Hidalgo", "Hidalgo", "Jalisco", "Jalisco", "México", "México", "Michoacán", "Michoacán", "Morelos", "Morelos", "Nayarit", "Nayarit", "Nuevo León", "Nuevo León", "Oaxaca", "Oaxaca", "Puebla", "Puebla", "Querétaro", "Querétaro", "Quintana Roo", "Quintana Roo", "San Luis Potosí", "San Luis Potosí", "Sinaloa", "Sinaloa", "Sonora", "Sonora", "Tabasco", "Tabasco", "Tamaulipas", "Tamaulipas", "Tlaxcala", "Tlaxcala", "Veracruz", "Veracruz", "Yucatán", "Yucatán", "Zacatecas", "Zacatecas"];
@@ -90,13 +90,10 @@
         // TRAZA C UNIFICADA (Índice 2): Comparación por Entidad (Hombres, Mujeres, Total Entidad)
         const primerEntidad = filtrarPorEntidad(entidadesUnicas[0]);
         var traceC_Comparacion = {
-            // Orden X inicial: Mujeres, Hombres, Total Entidad
             x: ['Mujeres', 'Hombres', 'Total Entidad'],
-            // Orden Y y Text en base al orden X
             y: [primerEntidad.mediaMujeres, primerEntidad.mediaHombres, primerEntidad.mediaTotal],
             name: 'Comparación Entidad', 
             type: 'bar',
-            // Colores: Mujeres(#2ca02c), Hombres(#ff7f0e), Total Entidad(#d62728)
             marker: { color: ['#2ca02c', '#ff7f0e', '#d62728'] }, 
             visible: false, 
             text: [primerEntidad.mediaMujeres.toFixed(1), primerEntidad.mediaHombres.toFixed(1), primerEntidad.mediaTotal.toFixed(1)],
@@ -109,7 +106,7 @@
         var data = [traceA, traceB, traceC_Comparacion]; 
 
         // ----------------------------------------------------------------------------------
-        // --- CONSTRUCCIÓN DEL MENÚ (Ajuste para usar la Traza C unificada) ---
+        // --- CONSTRUCCIÓN DEL MENÚ ---
         // ----------------------------------------------------------------------------------
 
         // 1. Botón para la Opción 1: Total por Entidad (Traza A, Índice 0)
@@ -136,7 +133,6 @@
         const botonesComparacion = entidadesUnicas.map((entidad, index) => {
             const datosFiltrados = filtrarPorEntidad(entidad);
             
-            // Se mantiene el orden Mujeres, Hombres, Total Entidad
             const y_data = [datosFiltrados.mediaMujeres, datosFiltrados.mediaHombres, datosFiltrados.mediaTotal];
             const text_data = y_data.map(y => y.toFixed(1));
             
@@ -144,7 +140,6 @@
                 label: `3. Sexo en: ${entidad}`,
                 method: 'update',
                 args: [
-                    // args[0]: Data (Actualización de Y, Text, X, y Color de la Traza C [índice 2])
                     {
                         'visible': [false, false, true], 
                         'y': [traceA.y, traceB.y, y_data], 
@@ -152,7 +147,6 @@
                         'x': [traceA.x, traceB.x, ['Mujeres', 'Hombres', 'Total Entidad']],
                         'marker.color': [traceA.marker.color, traceB.marker.color, ['#2ca02c', '#ff7f0e', '#d62728']]
                     },
-                    // args[1]: Layout
                     {
                         'title': `Comparación de Medias por Sexo y Total en ${entidad}`,
                         'xaxis.title': 'Sexo / Total Entidad',
@@ -169,45 +163,51 @@
         ];
         
         // ----------------------------------------------------------------------------------
-        // --- LAYOUT FINAL (Ajuste de Margen y Posición del Menú para Móviles) ---
+        // --- LAYOUT FINAL (Optimizado para Móviles) ---
         // ----------------------------------------------------------------------------------
 
         var layout = {
-            title: 'Media Ponderada Total por Entidad Federativa',
+            title: { 
+                text: 'Media Ponderada Total por Entidad Federativa',
+                font: { size: 14 } // Reducir tamaño de título para móviles
+            },
             xaxis: { 
                 title: 'Entidad Federativa',
-                // Asegurar que el texto del eje no se corte en móviles
-                automargin: true 
+                automargin: true,
+                tickfont: { size: 10 } // Reducir tamaño de etiquetas X
             },
             yaxis: { 
                 title: 'Media de Horas de Trabajo', 
                 range: [50, 70],
                 tickformat: '.1f',
-                automargin: true 
+                automargin: true,
+                tickfont: { size: 10 } // Reducir tamaño de etiquetas Y
             },
             margin: {
-                l: 50, // Menos margen izquierdo
-                r: 10,  // Menos margen derecho
-                t: 100, // Menos margen superior (para dejar espacio al menú)
-                b: 80   // Margen inferior para títulos de eje
+                l: 40, 
+                r: 10,
+                t: 100, 
+                b: 80,
+                pad: 0
             },
             barmode: 'group',
             updatemenus: [{
                 buttons: todosLosBotones,
                 direction: 'down',
                 showactive: true,
-                x: 0, // Posición X ajustada a la izquierda (0)
-                xanchor: 'left',
-                y: 1.15, // Posición Y ligeramente más alta
+                // **Ajustes para que el menú sea accesible en móviles:**
+                x: 0.05, // Colocar el menú más a la izquierda
+                xanchor: 'left', // Anclado a la izquierda para evitar que se salga de la pantalla
+                y: 1.1, 
                 yanchor: 'top',
-                active: 0 
+                font: { size: 10 } // Reducir el tamaño de la fuente del menú
             }]
         };
 
-        // --- CREAR GRÁFICO (Añadir configuración de responsividad) ---
+        // --- CREAR GRÁFICO ---
         Plotly.newPlot('plotly-graph', data, layout, {
-            // **ADICIÓN CLAVE 2: Hacer el gráfico sensible al tamaño del contenedor**
-            responsive: true 
+            responsive: true,
+            displayModeBar: false // Opcional: Oculta la barra de herramientas de Plotly para dar más espacio
         });
     </script>
 </body>
